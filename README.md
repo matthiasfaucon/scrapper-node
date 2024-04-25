@@ -1,19 +1,19 @@
-# Plantopia
+# LogiScraper
 
 Plantopia est la référence en ligne pour découvrir, apprendre et partager votre passion pour les plantes.
 
 ## Installation et Utilisation
 
-1. Cloner le dépôt : `git clone https://github.com/matthiasfaucon/plantopia.git`
+1. Cloner le dépôt : `git clone https://github.com/matthiasfaucon/scrapper-node.git`
 2. Installer les dépendances du front-end :
 cd front-end
-npm install
-npm run dev
+pnpm install
+pnpm dev 
 
 3. Installer les dépendances du back-end :
 cd back-end
-npm install
-npm run dev
+pnpm install
+pnpm start
 
 ## Configuration
 
