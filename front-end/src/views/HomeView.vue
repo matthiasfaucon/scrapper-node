@@ -74,18 +74,7 @@
           <button v-if="step < 5" @click="nextStep" :class="buttonStyles">Suivant</button>
           <button v-else @click="submitForm" :class="buttonStyles">Soumettre</button>
         </div>
-
       </div>
-
-      <!-- <div v-else>
-        <template v-if="step <= 4">
-
-          <button @click="nextStep">Suivant</button>
-        </template>
-<div v-else>
-
-</div> -->
-      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -119,7 +108,6 @@ const area = reactive({
 
 const params = computed(() => {
   return {
-
     step: step.value, type: type.value,
     city: city.value,
     minBudget: budget.min,
@@ -128,9 +116,67 @@ const params = computed(() => {
     maxRooms: rooms.max,
     minArea: area.min,
     maxArea: area.max
-
   }
 })
+
+
+function nextStep() {
+  step.value++
+  console.log(params.value)
+  router.push({ query: { ...params.value } })
+}
+
+function previousStep() {
+  step.value--
+  router.push({ query: { ...params.value } })
+}
+
+async function submitForm(e) {
+  // Traitement du formulaire ici
+  e.preventDefault()
+
+  router.push({ query: { ...params.value } })
+  const body = {
+    type: type.value,
+    city: city.value,
+    budget: budget,
+    rooms: rooms,
+    area: area
+  }
+  Swal.fire({
+    title: 'Chargement...',
+    text: 'Veuillez patienter pendant que nous recherchons les biens qui pourrait vous plaire.',
+    icon: 'info',
+    showConfirmButton: false,
+    allowOutsideClick: false
+  })
+
+  let response = await fetch('http://localhost:3000/api/scraping', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  })
+
+  const responseBody = await response.json()
+  console.log("Response:", response)
+  if (response.status !== 400) {
+    Swal.close()
+    Swal.fire({
+      title: 'Succès',
+      text: 'Les biens qui pourraient vous plaire ont été envoyé par mail.',
+      icon: 'success'
+    })
+  } else {
+    Swal.close()
+    Swal.fire({
+      title: 'Erreur',
+      text: responseBody.error ?? 'An error occurred while processing the data.',
+      icon: 'error'
+    })
+  }
+}
 
 const containerStyles = css({
   display: 'flex',
@@ -253,61 +299,4 @@ const buttonStyles = css({
     color: '#F9F4F5'
   }
 });
-
-function nextStep() {
-  step.value++
-  console.log(params.value)
-  router.push({ query: { ...params.value } })
-}
-
-function previousStep() {
-  step.value--
-  router.push({ query: { ...params.value } })
-}
-
-async function submitForm(e) {
-  // Traitement du formulaire ici
-  e.preventDefault()
-  const body = {
-    type: type.value,
-    city: city.value,
-    budget: budget,
-    rooms: rooms,
-    area: area
-  }
-
-  Swal.fire({
-    title: 'Chargement...',
-    text: 'Veuillez patienter pendant que nous recherchons les biens qui pourrait vous plaire.',
-    icon: 'info',
-    showConfirmButton: false,
-    allowOutsideClick: false
-  })
-
-  let response = await fetch('http://localhost:3000/api/scraping', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  })
-
-  const responseBody = await response.json()
-  console.log("Response:", response)
-  if (response.status !== 400) {
-    Swal.close()
-    Swal.fire({
-      title: 'Succès',
-      text: 'Les biens qui pourraient vous plaire ont été envoyé par mail.',
-      icon: 'success'
-    })
-  } else {
-    Swal.close()
-    Swal.fire({
-      title: 'Erreur',
-      text: responseBody.error ?? 'An error occurred while processing the data.',
-      icon: 'error'
-    })
-  }
-}
 </script>
