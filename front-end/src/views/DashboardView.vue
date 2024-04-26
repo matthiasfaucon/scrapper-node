@@ -36,8 +36,8 @@ const apartmentsData = ref([]);
 onMounted(async () => {
     let response = await fetch('http://localhost:3000/api/apartments');
     response = await response.json();
-    // apartmentsData.value.push({ ...response });
     apartmentsData.value = response;
+
     renderChart();
 });
 

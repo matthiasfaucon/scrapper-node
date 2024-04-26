@@ -25,7 +25,6 @@ fastify.get('/api/apartments', async () => {
         const timestamp = file.match(/\d+/)[0];
 		let date = new Date(parseInt(timestamp));
 		date = date.toLocaleDateString('fr-FR');
-        console.log('Date:', date);
 
         const data = fs.readFileSync(dir + '/' + file);
         const apartmentsData = JSON.parse(data);
@@ -79,7 +78,7 @@ fastify.post('/api/scraping', async (request, reply) => {
 		await page.waitForNavigation();
 		
 		try {
-			await page.waitForSelector('.resultsListContainer', { timeout: 3000 });
+			await page.waitForSelector('.resultsListContainer');
 		} catch (error) {
 			console.log('No results found');
 			await browser.close();
@@ -99,7 +98,7 @@ fastify.post('/api/scraping', async (request, reply) => {
 				console.log('Scraping:', link);
 				try {
 					await new Promise((resolve) => setTimeout(resolve, 2000));
-					await page.goto(link, { timeout: 0 });
+					page.goto(link, { timeout: 0 });
 				} catch (error) {
 					console.log('Error navigating to page:', error);
 					continue;
@@ -132,6 +131,11 @@ fastify.post('/api/scraping', async (request, reply) => {
 			subject: "Résulats de votre recherche LogiScrap - " + tab.length + " annonces trouvées",
 			html: mailBody,
 		})
+
+		const date = new Date();
+		const timestamp = date.getTime();
+		const filename = `./datas/new-apartments${timestamp}-${type}-${city}-budget_${budget.min}_${budget.max}-rooms_${rooms.min}_${rooms.max}-area_${area.min}_${area.max}.json`;
+		fs.writeFileSync(filename, JSON.stringify(tab));
 		
 		await browser.close();
 
@@ -140,6 +144,7 @@ fastify.post('/api/scraping', async (request, reply) => {
         await browser.close(); // Assure-toi de fermer le navigateur en cas d'erreur
         await reply.code(400).send({ error: "Une erreur interne s'est produite" }); // Envoie un message d'erreur approprié
     }
+	// await browser.close();
 });
 
 async function scrapePage(page) {
