@@ -1,6 +1,6 @@
-# LogiScraper
+# LogiScrap
 
-Plantopia est la référence en ligne pour découvrir, apprendre et partager votre passion pour les plantes.
+LogiScrap est un outil permettant de trouver des biens qui correspondent à vos besoins.
 
 ## Installation et Utilisation
 
