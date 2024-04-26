@@ -6,14 +6,18 @@ LogiScrap est un outil permettant de trouver des biens qui correspondent à vos 
 
 1. Cloner le dépôt : `git clone https://github.com/matthiasfaucon/scrapper-node.git`
 2. Installer les dépendances du front-end :
+```
 cd front-end
 pnpm install
 pnpm dev 
+```
 
 3. Installer les dépendances du back-end :
+```
 cd back-end
 pnpm install
 pnpm start
+```
 
 ## Configuration
 
